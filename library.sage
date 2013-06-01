@@ -446,33 +446,13 @@ def countFreudenthal(freud):
 
 # returns the matrix that maps the junction basis to the Dynkin basis
 # in the standard representation of ADE groups.
-def getDynkinMap():
-    if algebraType == None:
-        print "algbraType not defined!"
-        return
-
-    if algebraType == 'Dn':
-        r = len(branes)-2
-        matlist = [[0 for i in range(r+2)] for j in range(r)]
-        for i in range(r-1):
-            matlist[i][i] = 1
-            matlist[i][i+1] = -1
-        matlist[r-1][r-2], matlist[r-1][r-1], matlist[r-1][r], matlist[r-1][r+1] = 1,1,1,-1
-        return matrix(QQ,matlist)
-    elif algebraType == 'An':
-        r = len(branes)-1
-        matlist = [[0 for i in range(r+1)] for j in range(r)]
-        for i in range(r):
-            matlist[i][i] = 1
-            matlist[i][i+1] = -1
-        return matrix(QQ,matlist)
+def getDynkinMap(sroots):
+    return -1*matrix(sroots)*matrix(iMat)
 
         
-def mapToDynkin(J,phiD = None):
-    if phiD == None:
-        phiD = getDynkinMap()
-
-    return matrix(QQ,J)*phiD.transpose()
+def mapToDynkin(J,sroots):
+    m1 = getDynkinMap(sroots)*matrix(QQ,J).transpose()
+    return list(list(m1.transpose())[0])
 
 def findHighestWeights(boxsize):
     junctionbox = []
@@ -522,4 +502,8 @@ def minV(v):
 def multV(r,v):
     return [r*v[i] for i in range(len(v))]
 
-
+def sumV(vecs):
+    vec = [0 for i in range(len(vecs[0]))]
+    for v in vecs:
+        vec = addV(v,vec)
+    return vec
